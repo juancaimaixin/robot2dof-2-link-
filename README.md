@@ -19,7 +19,21 @@ A reproducible Python simulation study comparing independent-joint PID, PID with
 
 CTC tracks most accurately under nominal conditions. Gravity-compensated PID recovers fastest under the specified force-disturbance criterion: endpoint error at or below 10 mm for at least 0.5 s after force removal. These findings apply to the frozen gains and tested conditions; they are simulation results, not hardware measurements.
 
+### Nominal Tracking
+
 ![Nominal controller comparison](results/nominal/20260907T024619_815442Z/nominal_comparison.png)
+
+### Unknown Payload
+
+Tracking error, control effort, and torque saturation across payload masses from 0 to 1 kg, with frozen gains and unloaded controller models.
+
+![Payload benchmark comparing tracking error, control effort, and torque saturation](results/payload/20260911T014147_244577Z/payload_comparison.png)
+
+### Controller-Model Uncertainty
+
+Tracking error, control effort, and torque saturation with controller-model errors from -30% to +30%. The controller's link-2 mass and inertia are scaled together while the simulated plant and gains remain fixed.
+
+![Model uncertainty benchmark comparing tracking error, control effort, and torque saturation](results/model_uncertainty/20260911T025328_299278Z/model_uncertainty_comparison.png)
 
 See the [accepted datasets](results/README.md) and [Lagrangian derivation](notebooks/09_lagrangian_derivation.md).
 
