@@ -2,6 +2,14 @@
 
 A reproducible Python simulation study comparing independent-joint PID, PID with gravity compensation, and computed torque control (CTC) for a rigid robot arm moving in a vertical plane.
 
+## Robot Model
+
+![Two-link robot arm with q1 measured from the positive x-axis and q2 measured relative to link 1](docs/images/two_link_arm.png)
+
+- **q₁** is the angle of link 1 measured from the positive x-axis.
+- **q₂** is the angle of link 2 relative to the forward extension of link 1, so link 2's absolute orientation is **q₁ + q₂**.
+- Both angles are positive counterclockwise. The arm moves in the vertical x–y plane, with gravity acting downward. Link lengths are **l₁ = 0.50 m** and **l₂ = 0.40 m**; the code uses radians.
+
 ## Results
 
 | Metric | PID | PID + Gravity | CTC |
