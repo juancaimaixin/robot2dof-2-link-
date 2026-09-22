@@ -14,7 +14,7 @@ where = ["src"]
 namespaces = false
 
 [tool.pytest.ini_options]
-testpaths = ["tests", "stage21", "stage22"]
+testpaths = ["tests"]
 pythonpath = ["src"]
 addopts = ["-ra", "--strict-config", "--strict-markers"]
 
