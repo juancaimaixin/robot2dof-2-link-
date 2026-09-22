@@ -13,7 +13,7 @@ CTC tracks most accurately under nominal conditions. Gravity-compensated PID rec
 
 ![Nominal controller comparison](results/nominal/20260907T024619_815442Z/nominal_comparison.png)
 
-See the [accepted datasets](results/README.md), [research questions and advance predictions](RESEARCH_CHARTER.md), and [Lagrangian derivation](notebooks/09_lagrangian_derivation.md).
+See the [accepted datasets](results/README.md) and [Lagrangian derivation](notebooks/09_lagrangian_derivation.md).
 
 ## Setup
 
@@ -52,7 +52,6 @@ tests/               Numerical and behavioral regression tests
 experiments/         Benchmark, plotting, and symbolic verification scripts
 results/             Frozen tuning record and 42 accepted evaluation runs
 notebooks/           Lagrangian derivation and equation figure
-RESEARCH_CHARTER.md   Research questions, predictions, and experimental scope
 environment.yml      Scientific Python environment
 pyproject.toml       Package and test configuration
 run.ps1              Optional Windows launcher
