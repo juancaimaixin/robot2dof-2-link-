@@ -1,0 +1,101 @@
+actual_model:
+  I1: 0.041666666666666664
+  I2: 0.020000000000000004
+  g: 9.81
+  l1: 0.5
+  l2: 0.4
+  lc1: 0.25
+  lc2: 0.2
+  m1: 2.0
+  m2: 1.5
+  payload_mass: 0.0
+actuator:
+  limit_nm: 20.0
+  type: symmetric_joint_torque_limit
+controller:
+  gains:
+    kd:
+    - 43.648740694702795
+    - 27.902747337359745
+    ki:
+    - 16.905614402662785
+    - 71.1030900140941
+    kp:
+    - 288.1269373322243
+    - 193.81506985439225
+  name: pid_gravity
+  tuning_configuration_sha256: 50247f53d83e161b5419f0e59216c5064f2d6f8700eca295f6dc253e140ec3da
+controller_model:
+  I1: 0.041666666666666664
+  I2: 0.020000000000000004
+  g: 9.81
+  l1: 0.5
+  l2: 0.4
+  lc1: 0.25
+  lc2: 0.2
+  m1: 2.0
+  m2: 1.5
+  payload_mass: 0.0
+disturbance:
+  torque_nm:
+  - 0.0
+  - 0.0
+  type: constant_joint_torque
+experiment: model_uncertainty
+metrics:
+  absolute_mechanical_work: left_rectangle_absolute_total_power
+  control_effort: applied_torque_squared_held_interval_integral
+  end_effector_error: euclidean_distance_using_actual_geometry
+  joint_rmse: unweighted_all_samples_including_terminal
+  overall_joint_rmse: root_mean_square_over_samples_and_joints
+  saturation_fraction: any_joint_saturated_interval_duration
+model_uncertainty:
+  relative_error: 0.0
+  scaled_parameters:
+  - m2
+  - I2
+output:
+  configuration: pid_gravity_model_error_0.0.yaml
+  history: pid_gravity_model_error_0.0.npz
+  metadata: pid_gravity_model_error_0.0.json
+  summary: model_uncertainty_metrics.csv
+schema_version: 1
+seed: null
+simulation:
+  control_hold: zero_order_hold
+  initial_integral_error:
+  - 0.0
+  - 0.0
+  initial_state:
+  - 0.3490658503988659
+  - -0.6108652381980153
+  - 0.0
+  - 0.0
+  integrator: fixed_step_rk4
+  state_order:
+  - q1
+  - q2
+  - q1_dot
+  - q2_dot
+  step_s: 0.001
+trajectory:
+  position_unit: rad
+  time_unit: s
+  type: quintic_stop_to_stop
+  waypoint_positions:
+  - - 0.3490658503988659
+    - -0.6108652381980153
+  - - -0.6981317007977318
+    - 0.4363323129985824
+  - - 0.9599310885968813
+    - 0.7853981633974483
+  - - 0.08726646259971647
+    - -0.8726646259971648
+  - - -0.5235987755982988
+    - 0.2617993877991494
+  waypoint_times:
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0

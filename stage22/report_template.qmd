@@ -1,0 +1,293 @@
+---
+title: "Tracking Accuracy and Robustness of a Planar Two-DOF Robot Arm"
+subtitle: "A Reproducible Comparison of PID, Gravity Compensation, and Computed Torque Control"
+lang: en
+date: "2026-09-17"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    embed-resources: true
+    html-math-method: mathml
+    theme: cosmo
+    css: styles.css
+  typst:
+    toc: false
+    number-sections: true
+    mainfont: Arial
+    fontsize: 10pt
+    papersize: a4
+    margin:
+      x: 19mm
+      y: 18mm
+    keep-typ: true
+    include-in-header:
+      text: |
+        #set par(justify: false, leading: 0.7em)
+        #set heading(outlined: true)
+        #show table: set text(size: 8.5pt)
+execute:
+  enabled: false
+---
+
+## Abstract {.unnumbered}
+
+This study compares independent-joint PID, PID with gravity compensation, and computed torque control (CTC) on a robot moving in a vertical plane under a shared trajectory, sampling interval, and torque limit. Gains are selected on a separate training trajectory and frozen before @@run_count@@ deterministic evaluation runs covering nominal conditions, unknown endpoint payloads, controller-model parameter errors, and external endpoint force. Nominal joint RMSE values are @@nominal_rmse@@ degrees, and formal disturbance recovery delays are @@recovery@@ seconds, in the same controller order. CTC achieves the smallest nominal tracking error, but its advantage does not generalize to all payload, model mismatch, or disturbance cases. Saturation and degraded runs are retained. Control effort, absolute mechanical work, and baseline-relative disturbance diagnostics are explicitly distinguished. Tables, numerical statements, and figures are assembled automatically from accepted results, without retuning the controllers.
+
+**Keywords:** two-DOF robot arm; computed torque control; gravity compensation; model mismatch; reproducible simulation.
+
+{{< pagebreak >}}
+
+# Introduction
+
+Robot models reduce the dynamic errors that feedback must compensate, but introduce dependence on model accuracy. This project compares three controllers on the same arm and trajectory under nominal conditions, unknown payloads, controller-model errors, and external force.
+
+The charter predicted that CTC would track best nominally, degrade fastest with unknown payload, and lose its advantage over PID as model error grows; gravity-compensated PID would recover fastest after force removal. Predictions are tested, not used to select results. Robustness here describes finite predefined scenarios, not a universal stability proof.
+
+The theoretical basis is [Modern Robotics torque control](https://modernrobotics.northwestern.edu/nu-gm-book-resource/11-4-motion-control-with-torque-or-force-inputs-part-3-of-3/). The project's implementation defines its particular PD-type CTC, PID integral update, sampling, and saturation; the teaching material does not establish these experimental results.
+
+# Model
+
+## Coordinates and Kinematics
+
+The arm moves in a vertical plane. Positive $x$ points horizontally right and positive $y$ vertically upward. The angle $q_1$ is measured counterclockwise from the horizontal axis; $q_2$ is the angle of the second link relative to the first. Internal calculations use SI units and radians; plots may display degrees.
+
+$$
+x=l_1\cos q_1+l_2\cos(q_1+q_2),\qquad
+y=l_1\sin q_1+l_2\sin(q_1+q_2).
+$$
+
+End-effector velocity satisfies $\dot p=J(q)\dot q$. A force in the base frame produces joint torque $\tau_{\mathrm{ext}}=(J(q)^{T})F$. The force mapping uses the actual configuration, not the reference configuration.
+
+## Rigid-Body Dynamics
+
+$$
+M(q)\ddot q+c(q,\dot q)+G(q)=\tau+\tau_{\mathrm{ext}}.
+$$
+
+Let $q_{12}=q_1+q_2$. Without payload, the independent mass-matrix entries are
+
+$$
+\begin{aligned}
+M_{11}&=I_1+I_2+m_1l_{c1}^2+m_2(l_1^2+l_{c2}^2+2l_1l_{c2}\cos q_2),\\
+M_{12}&=M_{21}=I_2+m_2(l_{c2}^2+l_1l_{c2}\cos q_2),\\
+M_{22}&=I_2+m_2l_{c2}^2.
+\end{aligned}
+$$
+
+With $h=m_2l_1l_{c2}\sin q_2$,
+
+$$
+c=\begin{bmatrix}-h(2\dot q_1\dot q_2+\dot q_2^2)\\h\dot q_1^2\end{bmatrix},\qquad
+G=g\begin{bmatrix}(m_1l_{c1}+m_2l_1)\cos q_1+m_2l_{c2}\cos q_{12}\\m_2l_{c2}\cos q_{12}\end{bmatrix}.
+$$
+
+The endpoint payload is a point mass $m_p$. It adds $\Delta M=m_p(J^{T})J$ and corresponding Coriolis/centrifugal and gravity terms. Specifically, $h$ gains $m_pl_1l_2\sin q_2$, and $G$ gains $m_pg[l_1\cos q_1+l_2\cos q_{12},\ l_2\cos q_{12}]^{T}$. Payload therefore changes inertia, motion coupling, and gravity, rather than merely adding constant torque.
+
+@@parameter_table@@
+
+: Nominal parameters read from the accepted nominal YAML. {#tbl-parameters}
+
+{{< pagebreak >}}
+
+# Trajectory
+
+Each segment uses rest-to-rest quintic time scaling. With normalized time $u=(t-t_0)/T$,
+
+$$
+s(u)=10u^3-15u^4+6u^5,\qquad q_d=q_a+(q_b-q_a)s(u).
+$$
+
+Velocity and acceleration follow from analytic derivatives and are zero at every waypoint. The training trajectory is @@training_path@@ over @@training_duration@@ s, used only for gain selection. The held-out test trajectory is listed below. All four experiment families use identical test trajectories and initial states.
+
+@@trajectory_table@@
+
+: Held-out test waypoints. {#tbl-waypoints}
+
+The initial position equals the first waypoint; initial velocity and PID integral error are zero. Error statistics include the initial transient, with no warm-up exclusion or removal of unfavorable intervals.
+
+# Controllers
+
+Let $e=q_d-q$ and $\dot e=\dot q_d-\dot q$. All gain matrices are diagonal.
+
+**Independent-joint PID:** $\tau_{\mathrm{req}}=K_pe+K_d\dot e+K_i z$. Conditional integration freezes a joint's integral when that joint is saturated and $\tau_i e_i>0$; otherwise, it advances the integral using the current error. This prevents accumulation that would worsen saturation.
+
+**PID with gravity compensation:** $\tau_{\mathrm{req}}=K_pe+K_d\dot e+K_i z+\hat G(q)$. Compensation uses the controller's internal model. Plant and controller parameters are stored separately, allowing independent model errors.
+
+**CTC:**
+
+$$
+\tau_{\mathrm{req}}=\hat M(q)(\ddot q_d+K_d\dot e+K_pe)+\hat c(q,\dot q)+\hat G(q).
+$$
+
+This CTC has no integral term. With an exact model, no saturation, and ideal continuous control, the error satisfies
+
+$$\ddot e+K_d\dot e+K_pe=-M(q)^{-1}\tau_{\mathrm{ext}}.$$
+
+Unknown external force still drives error: nominal model compensation does not compensate unknown force. The experiments use sampled control, so this ideal continuous equation is not an exact identity of the discrete simulation.
+
+All requested torques pass through a common actuator limit of ±@@torque_limit@@ N·m per joint. PID gains $K_p,K_d,K_i$ have units N·m/rad, N·m·s/rad, and N·m/(rad·s), respectively. CTC gains $K_p,K_d$ have units s$^{-2}$ and s$^{-1}$, so numerical gain magnitudes alone cannot compare control strength.
+
+@@gain_table@@
+
+: Frozen gains, with entries ordered by joint. Display rounding does not change simulation parameters. {#tbl-gains}
+
+{{< pagebreak >}}
+
+# Methodology
+
+## Tuning and Fairness
+
+Each controller uses @@candidate_count@@ candidates, totaling @@candidate_total@@, with seed @@seed@@. PID variants search joint gains directly; CTC is parameterized by natural frequency and damping ratio. All share the training trajectory, initial state, time step, torque limits, and objective:
+
+$$S=@@weight_tracking@@E_n+@@weight_effort@@U_n+@@weight_saturation@@r_{\mathrm{sat}}.$$
+
+$E_n$ is the overall RMSE after each joint's error is normalized by its training-trajectory angular span; $U_n=\int\sum_i\tau_i^2dt/(T\sum_i\tau_{\max,i}^2)$. Failed candidates are excluded; ties are resolved by control effort and then candidate ID. Screening rules and all candidates are retained in the frozen tuning file. This controls search budget, but parameterization and search ranges may still affect rankings; global optimality is not established.
+
+## Scenarios and Integration
+
+@@scenario_table@@
+
+: Fixed scenario grid. Model errors change only controller parameters $\hat m_2,\hat I_2$; the plant remains nominal. {#tbl-scenarios}
+
+The fixed RK4 step and control period are both @@step@@ s. Motor torque remains constant within each control interval. In disturbance experiments, constant base-frame force is mapped through $(J(q)^{T})F$ at the actual $q$ of every RK4 substep. Each run contains @@sample_count@@ state samples; the endpoint is recorded without further integration. Control effort includes motor torque only, not external torque.
+
+This reporting stage reads accepted histories without repeating simulations. Existing automated tests cover the model, simulator, controllers, and Stage 21 analysis. They verify implementation and do not replace independent physical experiments.
+
+## Metrics and Sources
+
+$$
+E_q=\sqrt{\frac{1}{2N}\sum_{k=1}^{N}\sum_{i=1}^{2}e_{k,i}^2},\quad
+E_p=\sqrt{\frac{1}{N}\sum_{k=1}^{N}\|p_d-p\|_2^2}.
+$$
+
+Peak end-effector error is the maximum Euclidean distance in the specified window. Control effort $U=\int\sum_i\tau_i^2dt$, in (N·m)$^2$·s, **is not energy**. Absolute total mechanical work $W=\int|\sum_i\tau_i\dot q_i|dt$, in J, is not electrical consumption either. Integral metrics use actual applied torque and interval-start samples. Saturation fraction measures the duration of intervals with either joint saturated.
+
+Formal recovery is measured from force removal: error must remain at or below @@threshold_mm@@ mm for at least @@hold@@ s. The reported delay is the start of the first qualifying window. Recovery not confirmed within the record remains unconfirmed and is not reported as zero seconds. Nominal-relative deviations in the figures are diagnostic and do not replace this metric.
+
+Stage 21's `summary.csv` and figures supply the report's numerical results. Their manifest hashes are checked before assembly; experiment parameters come from the same source YAML files. All scenarios are retained. These deterministic runs provide no independent random replicates, so no statistical error bars, confidence intervals, or significance tests are constructed.
+
+{{< pagebreak >}}
+
+# Results
+
+## Nominal Tracking
+
+@@nominal_table@@
+
+: Nominal accuracy and control input. RMSE aggregates both joints; work integrates absolute total power. {#tbl-nominal}
+
+The positions in @fig-track closely follow the reference, while @fig-error reveals distinct tracking errors. Nominal RMSE values are @@nominal_rmse@@ degrees for PID, PID with gravity compensation, and CTC, respectively. CTC has the smallest error and gravity-compensated PID is intermediate. Control efforts remain similar, so improved accuracy should not be described as a proportional reduction in energy consumption.
+
+![Nominal joint positions and reference trajectories; all controllers share the reference and initial state.](figures/01_nominal_tracking.png){#fig-track width=100%}
+
+![Nominal joint errors, retaining initial transients and every sampling interval.](figures/02_nominal_error.png){#fig-error width=100%}
+
+{{< pagebreak >}}
+
+## Nominal Control Input and Combined Metrics
+
+@fig-torque shows actual motor torques and shared limits; each controller has saturation fraction @@nominal_saturation@@. @fig-metrics presents accuracy, effort, and mechanical work together. Small error-metric bars retain numerical labels rather than being described as exactly zero.
+
+![Actual nominal motor torque; dashed lines indicate shared actuator limits.](figures/03_nominal_torque.png){#fig-torque width=100%}
+
+![Nominal accuracy, control effort, and absolute total mechanical work, each in its own units.](figures/04_nominal_metrics.png){#fig-metrics width=90%}
+
+{{< pagebreak >}}
+
+## Unknown Endpoint Payload
+
+@fig-payload includes the full mass grid. At @@payload_light@@ kg, overall joint RMSE values are @@payload_light_rmse@@ degrees. At the maximum @@payload_max@@ kg payload, they reach @@payload_max_rmse@@ degrees, with saturation fractions @@payload_max_saturation@@. These degraded runs remain in the analysis.
+
+![Payload effects on overall joint error, control effort, and saturation fraction.](figures/05_payload.png){#fig-payload width=100%}
+
+@@payload_table@@
+
+: All payload joint RMSE values in degrees; controller order is fixed. {#tbl-payload}
+
+At maximum payload, RMSE ratios relative to each controller's own nominal result are @@payload_ratios@@. CTC's very small nominal denominator magnifies relative deterioration; absolute errors are therefore also reported. Joint and end-effector errors need not yield the same ranking, because large angular deviations change the geometric correspondence.
+
+## Controller-Model Parameter Error
+
+In @fig-model, the plant is unchanged and both selected controller parameters are multiplied by $1+\delta$. PID uses no internal dynamics model, so its RMSE remains @@pid_nominal@@ degrees throughout the grid. CTC RMSE at @@model_min@@% and +@@model_max@@% error is @@ctc_model_min@@ and @@ctc_model_max@@ degrees, respectively, versus @@ctc_nominal@@ degrees at zero error. Sensitivity is asymmetric.
+
+![Shared relative error in controller-model mass and inertia; no controller saturates in this experiment.](figures/06_model_uncertainty.png){#fig-model width=100%}
+
+{{< pagebreak >}}
+
+## External Endpoint Force
+
+The base-frame force is @@force@@ N during [@@pulse_start@@, @@pulse_end@@) s. The left panel of @fig-response shows absolute reference error; the right shows additional deviation from the same controller's nominal trajectory. Their difference illustrates how baseline tracking error affects recovery time.
+
+![Force response: formal tracking error on the left and diagnostic nominal-relative deviation on the right.](figures/07_disturbance_response.png){#fig-response width=100%}
+
+@@disturbance_table@@
+
+: Disturbance recovery and peaks. Full-run and post-disturbance peaks are reported separately. {#tbl-disturbance}
+
+All three controllers recover within the observation window, with formal delays of @@recovery@@ s. PID with gravity compensation is fastest, followed by CTC and PID. Post-disturbance endpoint peaks are @@post_peaks@@ mm. Fast recovery and small peak error must therefore be reported separately.
+
+![Formal recovery delay from pulse removal and peak error between disturbance onset and trajectory completion.](figures/08_disturbance_metrics.png){#fig-recovery width=100%}
+
+{{< pagebreak >}}
+
+# Discussion
+
+## Responses to the Charter Predictions
+
+**The nominal-accuracy prediction is supported by these data.** CTC has the smallest overall joint RMSE with an accurate model. However, all controllers were tuned separately, so the full benefit cannot be attributed to adding a single compensation term. Structure and tuning jointly determine the observed differences.
+
+**The unknown-payload prediction requires a specified metric.** CTC shows the strongest increase in joint RMSE relative to its own nominal baseline and larger joint RMSE at the tested nonzero payloads. End-effector rankings can differ because of geometric mapping and large angular deviations; CTC is not necessarily worst on every payload metric. Larger payloads also cause saturation, so mismatch and actuator capacity cannot be isolated in these runs.
+
+**The model-error prediction receives conditional support.** CTC is best near zero error; its advantage decreases in either direction and it may underperform model-independent PID at larger mismatch. Positive and negative errors are asymmetric and should not be fitted by a single line in absolute error. Gravity-compensated PID degrades less across this grid, without guaranteeing the same behavior for other trajectories or parameter errors.
+
+**The recovery prediction is supported by the formal metric.** Gravity-compensated PID meets the threshold first. PID's longer formal recovery includes baseline tracking error, which the diagnostic panel helps distinguish. External force still drives CTC error; high nominal accuracy does not guarantee smaller disturbance peaks or faster recovery.
+
+## Interpretation Boundaries
+
+A best-controller claim must specify operating conditions and metrics. Nominal accuracy, parameter sensitivity, actuator saturation, disturbance peaks, and recovery time are different objectives. Squared-torque effort is a tuning penalty, not electrical energy. Mechanical work also excludes motor and drive losses and regenerative-braking efficiency. These data therefore do not support energy-saving claims.
+
+# Limitations
+
+The study covers one fixed robot, training and held-out trajectories, finite payload and error grids, and one force direction and pulse interval. It excludes friction, backlash, delay, flexibility, and sensor noise; controllers receive true joint states. The finite candidate budget does not establish global optimality, and parameterizations differ. Fixed-step integration and sampled holds introduce discretization effects. All findings are simulation results, without hardware validation or universal guarantees for untested conditions or closed-loop stability.
+
+Future work could add stochastic repeats, noise, multiple force directions, other trajectories, and matched-gain ablations. These extensions are not used to retune the current controllers. Failed and degraded conditions remain visible, without selection based on the expected conclusion.
+
+# Conclusion
+
+With frozen gains and shared test conditions, CTC achieves the highest nominal tracking accuracy. Unknown payload, model error, and force disturbances change the relationship among controllers. Gravity-compensated PID recovers fastest under the formal disturbance criterion. These data support no single winner across every condition and metric. Traceable sources, automatic numerical assembly, fixed figures, and HTML/PDF outputs from one source make the results reviewable.
+
+{{< pagebreak >}}
+
+# Reproducibility and Sources
+
+`stage22/build_report.py` assembles the report from fixed Stage 21 outputs and original configurations, then Quarto renders HTML and Typst PDF from the same source. HTML embeds resources and uses MathML; the English PDF uses Arial. The rendering workflow follows the [official Quarto Typst documentation](https://quarto.org/docs/output-formats/typst.html) and needs no separate LaTeX installation. Raw results are not modified, and failed builds are not marked as accepted.
+
+From the project root, with the project environment activated:
+
+```powershell
+python stage22/build_report.py --output stage22/rebuilt_report
+```
+
+Existing output directories are protected. Use `--output` to select a new directory. The package includes the full CSV, eight source figures, generated Quarto source, HTML, PDF, and a build manifest with input, program, and output hashes. Raw NPZ/YAML paths in the CSV are relative to this project root. Tables display rounded values; the CSV retains full precision.
+
+@@source_table@@
+
+: Fixed run directories used by this report. {#tbl-sources}
+
+**References and Project Evidence**
+
+- Modern Robotics, Chapter 11.4: computed torque and dynamic model compensation; linked in the introduction.
+- Official Quarto Typst documentation: PDF rendering and font configuration; linked above.
+- `RESEARCH_CHARTER.md`: predefined research questions and four predictions.
+- Frozen `results/tuning_search.json`: all candidates, objective, seed, and final selections.
+- Stage 21 summary, figures, and manifest: experimental results and their source provenance.
+
+{{< pagebreak >}}
+
+# Full Results
+
+These tables retain all @@run_count@@ runs. Joint RMSE is in degrees; endpoint RMSE and full-run peak are in mm; saturation is in %. The accompanying `summary.csv` retains full fields for effort, absolute mechanical work, recovery status, normalized results, and source paths.
+
+@@appendix_tables@@

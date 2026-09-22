@@ -1,0 +1,7 @@
+body { font-family: "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; color: #223044; }
+main { max-width: 1050px; }
+h1, h2 { color: #174a70; }
+table { font-size: 0.88rem; }
+figcaption { color: #46556a; line-height: 1.5; }
+.subtitle { color: #526b80; }
+code { overflow-wrap: anywhere; }

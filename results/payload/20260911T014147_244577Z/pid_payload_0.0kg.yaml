@@ -1,0 +1,86 @@
+actual_model:
+  I1: 0.041666666666666664
+  I2: 0.020000000000000004
+  g: 9.81
+  l1: 0.5
+  l2: 0.4
+  lc1: 0.25
+  lc2: 0.2
+  m1: 2.0
+  m2: 1.5
+  payload_mass: 0.0
+actuator:
+  limit_nm: 20.0
+  type: symmetric_joint_torque_limit
+controller:
+  gains:
+    kd:
+    - 16.834763264662215
+    - 33.57650325213311
+    ki:
+    - 95.43248337143797
+    - 64.3251189257144
+    kp:
+    - 270.6548361496739
+    - 102.72046256778128
+  name: pid
+  tuning_configuration_sha256: 50247f53d83e161b5419f0e59216c5064f2d6f8700eca295f6dc253e140ec3da
+controller_model: null
+disturbance:
+  torque_nm:
+  - 0.0
+  - 0.0
+  type: constant_joint_torque
+experiment: payload
+metrics:
+  absolute_mechanical_work: left_rectangle_absolute_total_power
+  control_effort: applied_torque_squared_held_interval_integral
+  end_effector_error: euclidean_distance_using_actual_geometry
+  joint_rmse: unweighted_all_samples_including_terminal
+  overall_joint_rmse: root_mean_square_over_samples_and_joints
+  saturation_fraction: any_joint_saturated_interval_duration
+output:
+  configuration: pid_payload_0.0kg.yaml
+  history: pid_payload_0.0kg.npz
+  metadata: pid_payload_0.0kg.json
+  summary: payload_metrics.csv
+schema_version: 1
+seed: null
+simulation:
+  control_hold: zero_order_hold
+  initial_integral_error:
+  - 0.0
+  - 0.0
+  initial_state:
+  - 0.3490658503988659
+  - -0.6108652381980153
+  - 0.0
+  - 0.0
+  integrator: fixed_step_rk4
+  state_order:
+  - q1
+  - q2
+  - q1_dot
+  - q2_dot
+  step_s: 0.001
+trajectory:
+  position_unit: rad
+  time_unit: s
+  type: quintic_stop_to_stop
+  waypoint_positions:
+  - - 0.3490658503988659
+    - -0.6108652381980153
+  - - -0.6981317007977318
+    - 0.4363323129985824
+  - - 0.9599310885968813
+    - 0.7853981633974483
+  - - 0.08726646259971647
+    - -0.8726646259971648
+  - - -0.5235987755982988
+    - 0.2617993877991494
+  waypoint_times:
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0

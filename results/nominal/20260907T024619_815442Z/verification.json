@@ -1,0 +1,57 @@
+{
+  "all_checks_passed": true,
+  "verified_at_utc": "2026-09-07T02:47:40.710979+00:00",
+  "baseline_directory": "20260906T080613_586557Z",
+  "frozen_file_sha256": "f3ca1c928579b0e724d0f80a30dd7f214f2915f3ee5d9fadff40d28962852e60",
+  "csv_byte_identical_to_baseline": true,
+  "controllers": {
+    "pid": {
+      "samples": 8001,
+      "all_saved_arrays_identical_to_baseline": true,
+      "independent_metrics_match_csv": true,
+      "configuration_sha256": "7591e764aa27d8a39abc3f731cdadaf199445f00c4871e82064db364896b05b6"
+    },
+    "pid_gravity": {
+      "samples": 8001,
+      "all_saved_arrays_identical_to_baseline": true,
+      "independent_metrics_match_csv": true,
+      "configuration_sha256": "34f4f2c3041cf94bcf06d1069fc07b65b8bbbebbea65289057b91fddac858141"
+    },
+    "computed_torque": {
+      "samples": 8001,
+      "all_saved_arrays_identical_to_baseline": true,
+      "independent_metrics_match_csv": true,
+      "configuration_sha256": "bfaa416c1753f796513aca722ba7028d8d436798c34614c1264d2b5f95c6da14"
+    }
+  },
+  "figure": {
+    "size_pixels": [
+      2600,
+      2000
+    ],
+    "visual_check_passed": true,
+    "sha256": "f7eb0ce688f418c111f8f08f2978b97d5304a5a7c42012b5db026eef000a84c7"
+  },
+  "source_sha256": {
+    "environment.yml": "ddf104fc421f51bcc2d0111bb0080168a93c35a07ea64773955cae3568a220a5",
+    "experiments/run_nominal_benchmark.py": "7d10c469341b0c9c1ea5b88391f118474043e204132557eb2ff22faa199465a8",
+    "src/robot2dof/actuation.py": "df47f2ed7b5f5bc2b37ece09743a3900116c110908aa476a2a63b80d78dc2bc7",
+    "src/robot2dof/benchmark.py": "ae74dacb27991e75abb0bb4de72b9902efa25613d43773192ed46aa3757d511e",
+    "src/robot2dof/controllers.py": "0fa0dbd321b73b8444b8565e773221286f2758595a3a59f148e6eaf79c67ebd8",
+    "src/robot2dof/dynamics.py": "7240a41654ce85b3d1827989dcb21e456ba5ffd19885349ae12b9d44185892cf",
+    "src/robot2dof/kinematics.py": "0545242d2812e988246267489975eee6db48a8946a513e269dd741dd7d15d71a",
+    "src/robot2dof/metrics.py": "5bbed46e0c28ac623520c31669a26fb4e2de58340d5627dbf65ee17e4db991ab",
+    "src/robot2dof/parameters.py": "c9e3886874469e19522b0b725b8fcc13c54c9b4e23baf6673cf0485cabcc80df",
+    "src/robot2dof/results_io.py": "9a593651df4607b63de765966eda9fecc262655b9d8a1ada3e2bdbfbeded06ea",
+    "src/robot2dof/simulation.py": "2e7f5a9af86183a6140a1439083f146992baab27dbbcbd38d06840fce94dd87f",
+    "src/robot2dof/state.py": "76bc573a8f51adf8523a52ec2ea37c712bd6c174899b159a3dd56c8adbcf61a8",
+    "src/robot2dof/trajectory.py": "e078d674a4e75f5f0592de2e215acf5555592a39e97aa584d1640dc412899653",
+    "src/robot2dof/tuning.py": "d9a9f5aad350dad99d2b5d72049be68b2e19943ece60b5499f09770a134ce751",
+    "experiments/plot_nominal_benchmark.py": "2ac33b25f71bd7392cfcbb48fd94f653bc55ff4ec196335f69db98c1cbacd6eb"
+  },
+  "validation": {
+    "pytest": "177 passed, 1 existing cache warning",
+    "ruff_lint": "passed",
+    "experiment_scripts_format": "passed"
+  }
+}

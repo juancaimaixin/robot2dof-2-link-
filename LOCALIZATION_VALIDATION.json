@@ -1,0 +1,78 @@
+{
+  "date": "2026-09-20",
+  "edition": "English",
+  "copy_scope": "All project source, tests, configuration, notes, archived records, saved experiments, figures, and reports. Git internals, caches, and package-installation metadata excluded. Bilingual report QA images replaced with English QA renders.",
+  "core_source": {
+    "files": 14,
+    "byte_identical": true
+  },
+  "raw_artifacts": {
+    ".npz": {
+      "files": 84,
+      "byte_identical": true
+    },
+    ".yaml": {
+      "files": 84,
+      "byte_identical": true
+    },
+    ".yml": {
+      "files": 1,
+      "byte_identical": true
+    },
+    ".csv": {
+      "files": 9,
+      "byte_identical": true
+    }
+  },
+  "frozen_tuning_sha256": "f3ca1c928579b0e724d0f80a30dd7f214f2915f3ee5d9fadff40d28962852e60",
+  "frozen_tuning_byte_identical": true,
+  "analysis_csv_byte_identical": true,
+  "eight_core_figures_byte_identical": true,
+  "pytest": {
+    "passed": 202,
+    "duration_seconds": 6.11,
+    "command": "python -m pytest -p no:cacheprovider -q",
+    "working_directory": "English edition root"
+  },
+  "ruff_lint": "passed: src tests experiments stage21 stage22",
+  "ruff_format": "passed: stage21 stage22 (7 files)",
+  "source_import": "Verified robot2dof imports from this edition/src, not the original editable installation.",
+  "nominal_simulation_reproduction": {
+    "controllers": [
+      "pid",
+      "pid_gravity",
+      "computed_torque"
+    ],
+    "all_simulation_history_arrays_exactly_equal_to_frozen_runs": true
+  },
+  "language_scan": {
+    "remaining_chinese_text_files": [],
+    "remaining_chinese_internal_paths": [],
+    "scope": "All UTF-8 text files plus extracted PDF text; excludes disposable caches and the user-selected outer folder name."
+  },
+  "report": {
+    "edition": "English",
+    "pdf_pages": 12,
+    "embedded_images": 8,
+    "mathml_equations": 42,
+    "missing_anchor_targets": [],
+    "html_language": "en",
+    "pdf_visual_review": "All 12 pages rendered and reviewed; no clipped or overlapping content observed.",
+    "html_browser_visual_review": "Title, abstract, contents navigation, result table, and figures inspected in the browser.",
+    "html_browser_figures_loaded": 8,
+    "html_browser_horizontal_overflow": false,
+    "html_browser_console_errors_or_warnings": [],
+    "render_warnings": 0,
+    "historical_validation_record": "verification_original_edition.json"
+  },
+  "analysis_and_report_manifests_verified": true,
+  "extra_repairs": [
+    {
+      "file": "tests/test_simulation.py",
+      "description": "Restored two separate norm calculations in a pre-existing malformed convergence-test line. The original file is unchanged."
+    }
+  ],
+  "launcher": "run.ps1 selects local src and prevents parent-repository Git discovery; restores process environment on exit.",
+  "translation_method": "Direct editorial translation for report, charter, theory index, experiment explanation, main plans, and current summary; local offline translation assistance for full historical records, with numeric/code/link preservation checks. No project text was uploaded to a translation service.",
+  "publication": "No Git commit, push, deployment, or public release performed."
+}

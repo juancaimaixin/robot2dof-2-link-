@@ -1,0 +1,26 @@
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+
+# Test and analysis caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local Python environments and package builds
+.venv/
+venv/
+env/
+*.egg-info/
+build/
+dist/
+
+# Jupyter and Quarto generated state
+.ipynb_checkpoints/
+.quarto/
+
+# Local editor and operating-system files
+.vscode/
+.DS_Store
+Thumbs.db

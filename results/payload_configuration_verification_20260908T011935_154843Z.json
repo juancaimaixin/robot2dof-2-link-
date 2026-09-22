@@ -1,0 +1,36 @@
+{
+  "verified_at_utc": "2026-09-08T01:19:35.154843+00:00",
+  "all_behavior_checks_passed": true,
+  "counts": {
+    "configurations": 15,
+    "npz_links": 15,
+    "changed_inputs": 25,
+    "invalid_mass": 12,
+    "nonfinite_configuration": 9
+  },
+  "unique_experiment_hashes": 15,
+  "unique_npz_yaml_json_filenames": 45,
+  "checks": [
+    "actual loaded model and unloaded controller model captured; pure PID model None",
+    "CTC no integral field; correct frozen gains, trajectory, units and simulation settings",
+    "nested snapshot isolation both directions",
+    "independent canonical hash; key-order invariance; JSON/YAML roundtrip",
+    "changes to physical inputs change hash; nearby float masses keep distinct names",
+    "NPZ experimental hash, tuning hash, mass and controller agree with configuration",
+    "existing files protected; nonfinite config rejected before output creation"
+  ],
+  "new_simulations_run": false,
+  "temporary_outputs_removed": true,
+  "pytest": "177 passed in 3.44s; existing cache warning",
+  "ruff_lint": "passed",
+  "format_pending": [
+    "results_io.py line 126 continuation indentation",
+    "benchmark.py existing trailing spaces",
+    "parameters.py existing trailing newline",
+    "dynamics.py existing wrapping"
+  ],
+  "frozen_file_sha256": "f3ca1c928579b0e724d0f80a30dd7f214f2915f3ee5d9fadff40d28962852e60",
+  "source_sha256": {
+    "src/robot2dof/results_io.py": "f12009196f2235a09efc5aa5e919a30463d22e6c0b24dfb690b864eab980da6b"
+  }
+}

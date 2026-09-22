@@ -1,0 +1,14 @@
+{
+  "pdf_pages": 12,
+  "embedded_images": 8,
+  "mathml_equations": 42,
+  "missing_anchor_targets": [],
+  "external_script_or_stylesheet_dependencies": [],
+  "identical_data_source_and_figure_files": 12,
+  "pdf_extracted_text_identical": true,
+  "pdf_bytes_identical": false,
+  "html_bytes_identical": true,
+  "render_warnings": 0,
+  "html_browser_visual_review": "blocked by automatic approval usage limit; not performed",
+  "pdf_pages_pixel_identical_at_1100px": true
+}

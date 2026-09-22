@@ -1,0 +1,37 @@
+{
+  "verified_at_utc": "2026-09-08T01:13:15.043482+00:00",
+  "all_current_scope_checks_passed": true,
+  "counts": {
+    "roundtrips": 15,
+    "overwrite_protection": 15,
+    "invalid_mass": 12,
+    "nonfinite_history": 69,
+    "invalid_extension": 3,
+    "nonfinite_scenario": 6
+  },
+  "checks": [
+    "all history fields and dtypes roundtrip with allow_pickle=False",
+    "PID integral field present; CTC integral field absent",
+    "actual payload mass and geometry; external torque copied without duplicate payload gravity",
+    "full terminal history retained; inputs unchanged",
+    "compressed archive; uppercase suffix; automatic parent creation; absolute return path",
+    "existing files byte-identical after overwrite refusal",
+    "nonfinite numeric history including terminal sample rejected before file creation",
+    "invalid mass, suffix, external torque, and derived Cartesian histories rejected before parent creation"
+  ],
+  "experiment_configuration_hash": "not implemented yet; next block",
+  "temporary_outputs_removed": true,
+  "new_simulations_run": false,
+  "pytest": "177 passed in 3.60s; existing cache warning",
+  "ruff_lint": "passed",
+  "results_io_format": "passed",
+  "other_format_pending": [
+    "benchmark.py trailing spaces",
+    "parameters.py trailing newline",
+    "dynamics.py expression wrapping"
+  ],
+  "frozen_file_sha256": "f3ca1c928579b0e724d0f80a30dd7f214f2915f3ee5d9fadff40d28962852e60",
+  "source_sha256": {
+    "src/robot2dof/results_io.py": "89d6838eec0dbf3819b6ce5dfda1a1639b6eb04b8c2fbe144687f55c143888c8"
+  }
+}

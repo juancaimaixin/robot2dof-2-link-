@@ -1,0 +1,31 @@
+{
+  "stage21_manifest_sha256": "ad5c106cfebd6705a83f78e489cdecaf984c1683b8e7fe9c41f745602d8604a5",
+  "tuning_sha256": "f3ca1c928579b0e724d0f80a30dd7f214f2915f3ee5d9fadff40d28962852e60",
+  "source_sha256": {
+    "build_report.py": "499c02733966bc660ea9c55891732be1018a649eef74f781b3e291c390382d67",
+    "report_template.qmd": "43ab2eebfaa103819983874f26ddee3c4138bb579015de7d10e3739df095af2c",
+    "styles.css": "2f5267a731ad8ab60bc306481a2e52f6aa87f515fa9f2c6871e2d6c26b45737f"
+  },
+  "run_count": 42,
+  "quarto_version": "1.10.18",
+  "rendered": true,
+  "outputs_sha256": {
+    "figures/01_nominal_tracking.png": "4d33c4dfecd4237cef4d6fbae5ea983973e2f9a421d020f4602aa3785f2949b9",
+    "figures/02_nominal_error.png": "433c4e55cbb5499c5d9d947ba348133c706dcd659848951f4d73e01019485d5c",
+    "figures/03_nominal_torque.png": "c7aac7953de327dd9e99ecfa88119df3013b92290ff546c52e54d867e2570c84",
+    "figures/04_nominal_metrics.png": "4e7c9284bd9b7bf80ecfe186fa4e93ccaf6c502d009bec5526acfcf4f124a00d",
+    "figures/05_payload.png": "260e7355294606095aec04a7ada16b0b45638b5728a95b34ee2d5cab803df86a",
+    "figures/06_model_uncertainty.png": "cc9ccf785e7b5041c10c47fa031dc3d519ba5438043236885bbb0c920ffe56aa",
+    "figures/07_disturbance_response.png": "7d79c0c0bf9b27c51db19115cc1ae5179d459a6053668ddf721699b8edd112b1",
+    "figures/08_disturbance_metrics.png": "9cff5e43ee6cd50dea8671a7b22d3fa65f2620cdab2d2e54f7be01d731bc86c6",
+    "render_html.log": "0975f3559ccd31e83bbdb64220b25ed428e2453bee2c7df6f2981fab65fff577",
+    "render_typst.log": "86fbb93b2b7029ddd67b44100c353b2813f7439e35236f8fb6f5965558e1d635",
+    "report.html": "7629f02c41b7ee4e0ea813b8cbcc496cc5b8be6f033bf18cf295de85c4ce0fa0",
+    "report.pdf": "8fe7d7a33aa92aecb41f107e7bb41432bd9ecea4bae9cae351875c54e001ebc4",
+    "report.qmd": "91abba7697aff47e0658646255467349311a99f5fd8e0e110992357065ea9a50",
+    "report.typ": "bf05fede6593ab5cf87d495e107a20feff5da36e0bd986df7e596778a8318c84",
+    "report_values.json": "48d5eae8c31fa6ccb9fe7155d454bf986ea7c2f789372d626a1625313dd2b69c",
+    "styles.css": "2f5267a731ad8ab60bc306481a2e52f6aa87f515fa9f2c6871e2d6c26b45737f",
+    "summary.csv": "2d08691e7fa74b529e25870c033eeb7a918e98bc9eec1822ead6798c95a4b2b1"
+  }
+}
